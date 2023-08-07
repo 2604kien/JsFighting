@@ -9,25 +9,43 @@ c.fillRect(0, 0, canvas.width,canvas.height);
 const gravity=0.15;
 class Sprite {
     // create constructor for a sprite
-    constructor({position, velocity}){
+    constructor({position, velocity, color = 'red', offset}){
         //assign position variable
         this.position=position;
-
+        this.width=50;
         //add velocity 
         this.velocity =velocity;
         this.lastKey;
         //add height
         this.height=150;
+        this.attackBox={
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            offset,
+            width: 100,
+            height: 50
+        }
+        this.color = color;
+        this.isAttacking;
     }
     //draw method to draw a sprite (player, enemy,...etc)
     draw(){
         //fillStyle set the color for fillRect
-        c.fillStyle="red";
-        c.fillRect(this.position.x, this.position.y,50,150);
+        c.fillStyle=this.color;
+        c.fillRect(this.position.x, this.position.y,this.width,150);
+        if(this.isAttacking){
+            c.fillStyle='yellow';
+        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        }
+        
     }
     //create moving method, update the time frame for object
     update(){
        this.draw();
+       this.attackBox.position.x=this.position.x+this.attackBox.offset.x;
+       this.attackBox.position.y=this.position.y;
        this.position.x += this.velocity.x;
        this.position.y += this.velocity.y;
     
@@ -41,6 +59,10 @@ class Sprite {
             this.velocity.y+=gravity;
         }
     }
+    attack(){
+        this.isAttacking=true;
+        setTimeout(()=>{this.isAttacking=false}, 100);
+    }
 }
 //create player and parse in values into Sprite object
 const player = new Sprite({position: {
@@ -49,6 +71,9 @@ const player = new Sprite({position: {
 }, velocity: {
     x: 0,
     y: 4
+}, color: "green", offset: {
+    x:0,
+    y:0
 }});
 
 //create enemy and parse in values into Sprite object
@@ -58,6 +83,9 @@ const enemy = new Sprite({position: {
 }, velocity: {
     x: 0,
     y: 4
+}, offset:{
+    x: -50,
+    y: 0
 }});
 
 // create animation
@@ -83,7 +111,14 @@ const keys={
         pressed: false
     }
 }
-
+function rectCollision({
+    r1, r2
+}){
+    return ( r1.attackBox.position.x + r1.attackBox.width>= r2.position.x
+        &&  r1.attackBox.position.x <=r2.position.x+r2.width
+        &&  r1.attackBox.position.y+ r1.attackBox.height>=r2.position.y
+        &&  r1.attackBox.position.y<=r2.position.y+r2.height &&  r1.isAttacking);
+}
 
 function animate(){
     //loop the animate function over and over again (act as a infinite loop)
@@ -108,13 +143,28 @@ function animate(){
     else if(keys.ArrowRight.pressed && enemy.lastKey =="ArrowRight"){
         enemy.velocity.x=4;
     }
+
+    //detect collision
+    if (rectCollision({r1: player, r2: enemy} )){
+        player.isAttacking=false;
+        console.log("player attacking successful");
+    }
+    
+    if (rectCollision({r1: enemy, r2: player})){
+        enemy.isAttacking=false;
+        console.log("enemy attacking successful");
+    }
+
+
 }
 animate();
 
 //add Event Listener that listen to an event (key down, key up)
 
 window.addEventListener('keydown', (event)=>{
+
     switch(event.key){
+
         //1st player key
         case 'd':
             keys.d.pressed=true;
@@ -126,6 +176,9 @@ window.addEventListener('keydown', (event)=>{
         break;
         case 'w':
             player.velocity.y=-8;
+        break;
+        case 'j':
+            player.attack();
         break;
 
         //2nd player key
@@ -140,6 +193,9 @@ window.addEventListener('keydown', (event)=>{
         break;
         case 'ArrowUp':
             enemy.velocity.y=-8;
+        break;
+        case '1':
+            if(event.code=='Numpad1') enemy.attack();
         break;
     }
 });
