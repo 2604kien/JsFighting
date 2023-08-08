@@ -160,9 +160,44 @@ function animate(){
         document.querySelector('#playerHealth').style.width=player.health+"%";
         
     }
+    //end game base on health
+    if(enemy.health<=0 || player.health<=0){
+        determineWinner({player, enemy});
+    }
 
 
 }
+function determineWinner({player, enemy, timerID}){
+    clearTimeout(timerId);
+    if(player.health==enemy.health){
+        document.getElementById("displayGame").innerHTML="TIE!!!";
+        document.getElementById("displayGame").style.display= "flex";
+    } 
+    else if(player.health>enemy.health){
+        document.getElementById("displayGame").innerHTML="PLAYER 1 WIN!!!";
+        document.getElementById("displayGame").style.display= "flex";
+    }
+    else if(player.health<enemy.health){
+        document.getElementById("displayGame").innerHTML="PLAYER 2 WIN!!!";
+        document.getElementById("displayGame").style.display= "flex";
+    }
+}
+var timer=10;
+let timerID;
+//decrease timer function
+function decreaseTimer(){
+    
+    if(timer>0){
+        timerId=setTimeout(decreaseTimer, 1000);
+        timer--;
+        document.getElementById("timer").innerHTML=timer.toString();
+    }
+    if(timer===0){
+        determineWinner({player, enemy, timerId});
+    }
+
+}
+decreaseTimer();
 animate();
 
 //add Event Listener that listen to an event (key down, key up)
