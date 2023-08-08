@@ -18,6 +18,7 @@ class Sprite {
         this.lastKey;
         //add height
         this.height=150;
+        this.health=100;
         this.attackBox={
             position: {
                 x: this.position.x,
@@ -148,11 +149,16 @@ function animate(){
     if (rectCollision({r1: player, r2: enemy} )){
         player.isAttacking=false;
         console.log("player attacking successful");
+        enemy.health-=20;
+        document.querySelector('#enemyHealth').style.width=enemy.health+"%";
     }
     
     if (rectCollision({r1: enemy, r2: player})){
         enemy.isAttacking=false;
         console.log("enemy attacking successful");
+        player.health-=20;
+        document.querySelector('#playerHealth').style.width=player.health+"%";
+        
     }
 
 
