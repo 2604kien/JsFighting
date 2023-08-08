@@ -7,66 +7,9 @@ canvas.height=600;
 c.fillRect(0, 0, canvas.width,canvas.height);
 
 const gravity=0.15;
-class Sprite {
-    // create constructor for a sprite
-    constructor({position, velocity, color = 'red', offset}){
-        //assign position variable
-        this.position=position;
-        this.width=50;
-        //add velocity 
-        this.velocity =velocity;
-        this.lastKey;
-        //add height
-        this.height=150;
-        this.health=100;
-        this.attackBox={
-            position: {
-                x: this.position.x,
-                y: this.position.y
-            },
-            offset,
-            width: 100,
-            height: 50
-        }
-        this.color = color;
-        this.isAttacking;
-    }
-    //draw method to draw a sprite (player, enemy,...etc)
-    draw(){
-        //fillStyle set the color for fillRect
-        c.fillStyle=this.color;
-        c.fillRect(this.position.x, this.position.y,this.width,150);
-        if(this.isAttacking){
-            c.fillStyle='yellow';
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        }
-        
-    }
-    //create moving method, update the time frame for object
-    update(){
-       this.draw();
-       this.attackBox.position.x=this.position.x+this.attackBox.offset.x;
-       this.attackBox.position.y=this.position.y;
-       this.position.x += this.velocity.x;
-       this.position.y += this.velocity.y;
-    
-       /*if else statement to change the velocity back to 0 if the y axis 
-       position of the object, height,and vertical velocity sump up to 0
-       ----else we add the gravity value into velocity*/
-        if(this.position.y+this.height+this.velocity.y>=canvas.height){
-            this.velocity.y=0;
-        }
-        else{
-            this.velocity.y+=gravity;
-        }
-    }
-    attack(){
-        this.isAttacking=true;
-        setTimeout(()=>{this.isAttacking=false}, 100);
-    }
-}
+
 //create player and parse in values into Sprite object
-const player = new Sprite({position: {
+const player = new Fighter({position: {
     x: 0,
     y: 0
 }, velocity: {
@@ -78,7 +21,7 @@ const player = new Sprite({position: {
 }});
 
 //create enemy and parse in values into Sprite object
-const enemy = new Sprite({position: {
+const enemy = new Fighter({position: {
     x: 600,
     y: 150
 }, velocity: {
@@ -88,7 +31,13 @@ const enemy = new Sprite({position: {
     x: -50,
     y: 0
 }});
-
+const background= new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: "./characterAsset/background.png"
+})
 // create animation
 const keys={
     //first key
@@ -112,20 +61,12 @@ const keys={
         pressed: false
     }
 }
-function rectCollision({
-    r1, r2
-}){
-    return ( r1.attackBox.position.x + r1.attackBox.width>= r2.position.x
-        &&  r1.attackBox.position.x <=r2.position.x+r2.width
-        &&  r1.attackBox.position.y+ r1.attackBox.height>=r2.position.y
-        &&  r1.attackBox.position.y<=r2.position.y+r2.height &&  r1.isAttacking);
-}
-
 function animate(){
     //loop the animate function over and over again (act as a infinite loop)
     window.requestAnimationFrame(animate);
     c.fillStyle='black';
     c.fillRect(0, 0, canvas.width, canvas.height);
+    background.update();
     player.update();
     enemy.update();
     player.velocity.x=0;
@@ -167,36 +108,7 @@ function animate(){
 
 
 }
-function determineWinner({player, enemy, timerID}){
-    clearTimeout(timerId);
-    if(player.health==enemy.health){
-        document.getElementById("displayGame").innerHTML="TIE!!!";
-        document.getElementById("displayGame").style.display= "flex";
-    } 
-    else if(player.health>enemy.health){
-        document.getElementById("displayGame").innerHTML="PLAYER 1 WIN!!!";
-        document.getElementById("displayGame").style.display= "flex";
-    }
-    else if(player.health<enemy.health){
-        document.getElementById("displayGame").innerHTML="PLAYER 2 WIN!!!";
-        document.getElementById("displayGame").style.display= "flex";
-    }
-}
-var timer=10;
-let timerID;
-//decrease timer function
-function decreaseTimer(){
-    
-    if(timer>0){
-        timerId=setTimeout(decreaseTimer, 1000);
-        timer--;
-        document.getElementById("timer").innerHTML=timer.toString();
-    }
-    if(timer===0){
-        determineWinner({player, enemy, timerId});
-    }
 
-}
 decreaseTimer();
 animate();
 
