@@ -55,7 +55,7 @@ class Sprite {
 //child class fighter extends from super class Sprite
 class Fighter extends Sprite {
     // create constructor for a sprite
-    constructor({position, velocity, color = 'red',  imageSrc, scale = 1, frameMax = 1, offset={x:0, y:0}}){
+    constructor({position, sprites, velocity, color = 'red',  imageSrc, scale = 1, frameMax = 1, offset={x:0, y:0}}){
         super({
             position,
             imageSrc,
@@ -68,6 +68,7 @@ class Fighter extends Sprite {
         this.frameElapsed=0;
         this.frameHold=10;
         this.width=50;
+        this.sprites=sprites;
         //add velocity 
         this.velocity =velocity;
         this.lastKey;
@@ -85,6 +86,11 @@ class Fighter extends Sprite {
         }
         this.color = color;
         this.isAttacking;
+        for (const sprite in sprites){
+            sprites[sprite].image =new Image();
+            sprites[sprite].image.src=sprites[sprite].imageSrc;
+        }
+      
     }
     //draw method to draw a sprite (player, enemy,...etc)
 

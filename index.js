@@ -24,6 +24,18 @@ scale: 2,
 offset:{
     x:0,
     y:93
+    },
+    sprites:{
+        idle:{
+            imageSrc: "./characterAsset/Player1/Idle.png",
+            frameMax:8
+    
+        },
+        run:{
+            imageSrc:"./characterAsset/Player1/Run.png",
+            frameMax:8,
+            image: new Image()
+        }
     }
 
 });
@@ -40,7 +52,19 @@ const enemy = new Fighter({position: {
     y: 107
 }, imageSrc: "./characterAsset/Player2/Idle.png",
 frameMax:4,
-scale: 2
+scale: 2,
+sprites:{
+    idle:{
+        imageSrc: "./characterAsset/Player2/Idle.png",
+        frameMax:8
+
+    },
+    run:{
+        imageSrc:"",
+        frameMax:8
+
+    }
+}
 });
 const background= new Sprite({
     position: {
@@ -93,11 +117,14 @@ function animate(){
     player.velocity.x=0;
     enemy.velocity.x=0;
     //player movement
+    player.image=player.sprites.idle.image;
     if (keys.a.pressed && player.lastKey =="a"){
         player.velocity.x=-4;
+        player.image=player.sprites.run.image;
     }
     else if(keys.d.pressed && player.lastKey =="d"){
         player.velocity.x=4;
+        player.image=player.sprites.run.image;
     }
     //2nd player movement
     if (keys.ArrowLeft.pressed && enemy.lastKey =="ArrowLeft"){
