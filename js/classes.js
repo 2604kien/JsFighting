@@ -1,11 +1,17 @@
 class Sprite {
     // create constructor for a sprite
-    constructor({position, imageSrc}){
+    constructor({position, imageSrc, scale = 1, frameMax = 1, offset={x:0, y:0}}){
         //assign position variable
         this.position=position;
         this.width=50;
         this.image=new Image();
         this.image.src=imageSrc;
+        this.scale=scale;
+        this.frameMax=frameMax;
+        this.frameCurrent=0;
+        this.frameElapsed=0;
+        this.frameHold=10;
+        this.offset=offset;
         //add velocity 
 
         //add height
@@ -13,21 +19,54 @@ class Sprite {
 
     }
     //draw method to draw a sprite (player, enemy,...etc)
+    animateFrame(){
+        
+       this.frameElapsed++;
+       if(this.frameElapsed % this.frameHold===0){
+      
+       if(this.frameCurrent<this.frameMax-1){
+        this.frameCurrent++;
+       }
+       else{
+        this.frameCurrent=0;
+        }
+        
+    }
+    }
     draw(){
-        c.drawImage(this.image, this.position.x, this.position.y);
+        c.drawImage(this.image,
+            this.frameCurrent*this.image.width/this.frameMax,
+            0,
+            this.image.width/this.frameMax,
+            this.image.height,
+             this.position.x - this.offset.x,
+              this.position.y - this.offset.y,
+              (this.image.width/this.frameMax)*this.scale,
+              this.image.height*this.scale);
         
     }
     //create moving method, update the time frame for object
     update(){
        this.draw();
+       this.animateFrame();
     }
 
 }
-class Fighter {
+//child class fighter extends from super class Sprite
+class Fighter extends Sprite {
     // create constructor for a sprite
-    constructor({position, velocity, color = 'red', offset}){
+    constructor({position, velocity, color = 'red',  imageSrc, scale = 1, frameMax = 1, offset={x:0, y:0}}){
+        super({
+            position,
+            imageSrc,
+            scale,
+            frameMax,
+            offset
+        });
         //assign position variable
-        this.position=position;
+        this.frameCurrent=0;
+        this.frameElapsed=0;
+        this.frameHold=10;
         this.width=50;
         //add velocity 
         this.velocity =velocity;
@@ -48,19 +87,11 @@ class Fighter {
         this.isAttacking;
     }
     //draw method to draw a sprite (player, enemy,...etc)
-    draw(){
-        //fillStyle set the color for fillRect
-        c.fillStyle=this.color;
-        c.fillRect(this.position.x, this.position.y,this.width,150);
-        if(this.isAttacking){
-            c.fillStyle='yellow';
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        }
-        
-    }
+
     //create moving method, update the time frame for object
     update(){
        this.draw();
+       this.animateFrame();
        this.attackBox.position.x=this.position.x+this.attackBox.offset.x;
        this.attackBox.position.y=this.position.y;
        this.position.x += this.velocity.x;

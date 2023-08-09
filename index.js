@@ -18,7 +18,15 @@ const player = new Fighter({position: {
 }, color: "green", offset: {
     x:0,
     y:0
-}});
+}, imageSrc: "./characterAsset/Player1/Idle.png",
+frameMax:8,
+scale: 2,
+offset:{
+    x:0,
+    y:93
+    }
+
+});
 
 //create enemy and parse in values into Sprite object
 const enemy = new Fighter({position: {
@@ -28,16 +36,28 @@ const enemy = new Fighter({position: {
     x: 0,
     y: 4
 }, offset:{
-    x: -50,
-    y: 0
-}});
+    x: 0,
+    y: 107
+}, imageSrc: "./characterAsset/Player2/Idle.png",
+frameMax:4,
+scale: 2
+});
 const background= new Sprite({
     position: {
         x: 0,
         y: 0
     },
     imageSrc: "./characterAsset/background.png"
-})
+});
+const shop= new Sprite({
+    position: {
+        x: 605,
+        y: 95
+    },
+    imageSrc: "./characterAsset/shop.png",
+    scale: 3,
+    frameMax: 6
+});
 // create animation
 const keys={
     //first key
@@ -67,6 +87,7 @@ function animate(){
     c.fillStyle='black';
     c.fillRect(0, 0, canvas.width, canvas.height);
     background.update();
+    shop.update();
     player.update();
     enemy.update();
     player.velocity.x=0;

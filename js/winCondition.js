@@ -13,7 +13,7 @@ function determineWinner({player, enemy, timerID}){
         document.getElementById("displayGame").style.display= "flex";
     }
 }
-var timer=10;
+var timer=61;
 let timerId;
 //decrease timer function
 function decreaseTimer(){
