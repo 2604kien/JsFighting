@@ -48,6 +48,10 @@ offset:{
             frameMax:6
         }
         ,
+        takeHit: {
+            imageSrc:"./characterAsset/Player1/Take hit - white silhouette.png",
+            frameMax:4
+        }
        
     },
     attackBox:{
@@ -95,6 +99,10 @@ scale: 2,
         attack1: {
             imageSrc:"./characterAsset/Player2/Attack1.png",
             frameMax:4
+        },
+        takeHit: {
+            imageSrc:"./characterAsset/Player2/Take hit.png",
+            frameMax:3
         }
         
     },
@@ -194,9 +202,10 @@ function animate(){
 
     //detect collision
     if (rectCollision({r1: player, r2: enemy} ) && player.isAttacking && player.frameCurrent===4){
+        enemy.takeHit();
         player.isAttacking=false;
         console.log("player attacking successful");
-        enemy.health-=20;
+      
         document.querySelector('#enemyHealth').style.width=enemy.health+"%";
     }
     if (player.isAttacking && player.frameCurrent === 4){
@@ -205,7 +214,7 @@ function animate(){
     if (rectCollision({r1: enemy, r2: player})&& enemy.isAttacking && enemy.frameCurrent===2){
         enemy.isAttacking=false;
         console.log("enemy attacking successful");
-        player.health-=20;
+        player.takeHit();
         document.querySelector('#playerHealth').style.width=player.health+"%";
         
     }

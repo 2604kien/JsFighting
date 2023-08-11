@@ -20,7 +20,6 @@ class Sprite {
     }
     //draw method to draw a sprite (player, enemy,...etc)
     animateFrame(){
-        
        this.frameElapsed++;
        if(this.frameElapsed % this.frameHold===0){
       
@@ -131,8 +130,17 @@ class Fighter extends Sprite {
         this.switchSprite("attack1");
         this.isAttacking=true;
     }
+    takeHit(){
+        
+        this.switchSprite("takeHit");
+        this.health-=20;
+    }
     switchSprite(sprite){
         if(this.image=== this.sprites.attack1.image && this.frameCurrent<this.sprites.attack1.frameMax-1) return;
+        if(this.image===this.sprites.takeHit.image &&
+            this.frameCurrent<this.sprites.takeHit.frameMax-1
+            )
+            return;
         switch(sprite){
             case 'idle':
                 if(this.image !== this.sprites.idle.image)
@@ -168,6 +176,13 @@ class Fighter extends Sprite {
                 this.frameCurrent=0;
                 this.image=this.sprites.attack1.image;
                 this.frameMax=this.sprites.attack1.frameMax;
+                
+            break;
+            case 'takeHit':
+                if(this.image !== this.sprites.takeHit.image)
+                this.frameCurrent=0;
+                this.image=this.sprites.takeHit.image;
+                this.frameMax=this.sprites.takeHit.frameMax;
                 
             break;
         }   
