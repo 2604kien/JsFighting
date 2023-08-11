@@ -83,6 +83,7 @@ class Fighter extends Sprite {
         this.velocity =velocity;
         this.lastKey;
         //add height
+        this.death=false;
         this.height=150;
         this.health=100;
         this.attackBox={
@@ -107,7 +108,7 @@ class Fighter extends Sprite {
     //create moving method, update the time frame for object
     update(){
        this.draw();
-       this.animateFrame();
+       if(!this.death) this.animateFrame();
        
        this.attackBox.position.x=this.position.x+this.attackBox.offset.x;
        this.attackBox.position.y=this.position.y+this.attackBox.offset.y;
@@ -132,10 +133,19 @@ class Fighter extends Sprite {
     }
     takeHit(){
         
-        this.switchSprite("takeHit");
         this.health-=20;
+        if(this.health<=0){
+            this.switchSprite("death");
+        }
+        else this.switchSprite("takeHit");
     }
     switchSprite(sprite){
+        if(this.image=== this.sprites.death.image) {
+            if(this.frameCurrent===this.sprites.death.frameMax-1){
+                this.death= true;
+            }
+            return;
+        };
         if(this.image=== this.sprites.attack1.image && this.frameCurrent<this.sprites.attack1.frameMax-1) return;
         if(this.image===this.sprites.takeHit.image &&
             this.frameCurrent<this.sprites.takeHit.frameMax-1
@@ -183,6 +193,13 @@ class Fighter extends Sprite {
                 this.frameCurrent=0;
                 this.image=this.sprites.takeHit.image;
                 this.frameMax=this.sprites.takeHit.frameMax;
+                
+            break;
+            case 'death':
+                if(this.image !== this.sprites.death.image)
+                this.frameCurrent=0;
+                this.image=this.sprites.death.image;
+                this.frameMax=this.sprites.death.frameMax;
                 
             break;
         }   

@@ -51,6 +51,10 @@ offset:{
         takeHit: {
             imageSrc:"./characterAsset/Player1/Take hit - white silhouette.png",
             frameMax:4
+        },
+        death: {
+            imageSrc:"./characterAsset/Player1/Death.png",
+            frameMax:6
         }
        
     },
@@ -103,6 +107,10 @@ scale: 2,
         takeHit: {
             imageSrc:"./characterAsset/Player2/Take hit.png",
             frameMax:3
+        },
+        death: {
+            imageSrc:"./characterAsset/Player2/Death.png",
+            frameMax:7
         }
         
     },
@@ -235,6 +243,8 @@ animate();
 //add Event Listener that listen to an event (key down, key up)
 
 window.addEventListener('keydown', (event)=>{
+    if(!player.death){
+
 
     switch(event.key){
 
@@ -253,7 +263,10 @@ window.addEventListener('keydown', (event)=>{
         case 'j':
             player.attack();
         break;
-
+    }
+}
+if(!enemy.death){
+    switch(event.key){
         //2nd player key
         case 'ArrowRight':
             keys.ArrowRight.pressed=true;
@@ -271,6 +284,7 @@ window.addEventListener('keydown', (event)=>{
             if(event.code=='Numpad1') enemy.attack();
         break;
     }
+}
 });
 window.addEventListener('keyup', (event)=>{
     switch(event.key){
