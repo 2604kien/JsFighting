@@ -33,9 +33,30 @@ offset:{
         },
         run:{
             imageSrc:"./characterAsset/Player1/Run.png",
-            frameMax:8,
-            image: new Image()
+            frameMax:8
+        },
+        jump:{
+            imageSrc:"./characterAsset/Player1/Jump.png",
+            frameMax:2
+        },
+        fall: {
+            imageSrc:"./characterAsset/Player1/Fall.png",
+            frameMax:2
+        },
+        attack1: {
+            imageSrc:"./characterAsset/Player1/Attack1.png",
+            frameMax:6
         }
+        ,
+       
+    },
+    attackBox:{
+        offset:{
+            x:95,
+            y:50,
+        },
+        width:100,
+        height:50
     }
 
 });
@@ -53,18 +74,39 @@ const enemy = new Fighter({position: {
 }, imageSrc: "./characterAsset/Player2/Idle.png",
 frameMax:4,
 scale: 2,
-sprites:{
-    idle:{
-        imageSrc: "./characterAsset/Player2/Idle.png",
-        frameMax:8
-
+    sprites:{
+        idle:{
+            imageSrc: "./characterAsset/Player2/Idle.png",
+            frameMax:4
+    
+        },
+        run:{
+            imageSrc:"./characterAsset/Player2/Run.png",
+            frameMax:8
+        },
+        jump:{
+            imageSrc:"./characterAsset/Player2/Jump.png",
+            frameMax:2
+        },
+        fall: {
+            imageSrc:"./characterAsset/Player2/Fall.png",
+            frameMax:2
+        },
+        attack1: {
+            imageSrc:"./characterAsset/Player2/Attack1.png",
+            frameMax:4
+        }
+        
     },
-    run:{
-        imageSrc:"",
-        frameMax:8
-
+    attackBox:{
+        offset:{
+            x:-130,
+            y:0,
+        },
+        width: 100,
+        height:50
     }
-}
+
 });
 const background= new Sprite({
     position: {
@@ -117,37 +159,58 @@ function animate(){
     player.velocity.x=0;
     enemy.velocity.x=0;
     //player movement
-    player.image=player.sprites.idle.image;
+
     if (keys.a.pressed && player.lastKey =="a"){
         player.velocity.x=-4;
-        player.image=player.sprites.run.image;
+        player.switchSprite("run");
     }
     else if(keys.d.pressed && player.lastKey =="d"){
         player.velocity.x=4;
-        player.image=player.sprites.run.image;
+        player.switchSprite("run");
+    }
+    else {player.switchSprite("idle");};
+    if (player.velocity.y<0){
+        player.switchSprite("jump");
+    }
+    else if(player.velocity.y>0){
+        player.switchSprite("fall");
     }
     //2nd player movement
     if (keys.ArrowLeft.pressed && enemy.lastKey =="ArrowLeft"){
         enemy.velocity.x=-4;
+        enemy.switchSprite("run");
     }
     else if(keys.ArrowRight.pressed && enemy.lastKey =="ArrowRight"){
         enemy.velocity.x=4;
+       enemy.switchSprite("run");
+    }
+    else {enemy.switchSprite("idle");};
+    if (enemy.velocity.y<0){
+        enemy.switchSprite("jump");
+    }
+    else if(enemy.velocity.y>0){
+        enemy.switchSprite("fall");
     }
 
     //detect collision
-    if (rectCollision({r1: player, r2: enemy} )){
+    if (rectCollision({r1: player, r2: enemy} ) && player.isAttacking && player.frameCurrent===4){
         player.isAttacking=false;
         console.log("player attacking successful");
         enemy.health-=20;
         document.querySelector('#enemyHealth').style.width=enemy.health+"%";
     }
-    
-    if (rectCollision({r1: enemy, r2: player})){
+    if (player.isAttacking && player.frameCurrent === 4){
+        player.isAttacking=false;
+    }
+    if (rectCollision({r1: enemy, r2: player})&& enemy.isAttacking && enemy.frameCurrent===2){
         enemy.isAttacking=false;
         console.log("enemy attacking successful");
         player.health-=20;
         document.querySelector('#playerHealth').style.width=player.health+"%";
         
+    }
+    if (enemy.isAttacking && enemy.frameCurrent === 2){
+        enemy.isAttacking=false;
     }
     //end game base on health
     if(enemy.health<=0 || player.health<=0){
