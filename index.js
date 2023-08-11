@@ -215,6 +215,7 @@ function animate(){
         console.log("player attacking successful");
       
         document.querySelector('#enemyHealth').style.width=enemy.health+"%";
+
     }
     if (player.isAttacking && player.frameCurrent === 4){
         player.isAttacking=false;
@@ -250,8 +251,10 @@ window.addEventListener('keydown', (event)=>{
 
         //1st player key
         case 'd':
+            
             keys.d.pressed=true;
             player.lastKey="d";
+            
         break;
         case 'a':
             keys.a.pressed=true;
